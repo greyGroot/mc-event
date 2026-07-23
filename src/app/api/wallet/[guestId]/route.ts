@@ -46,11 +46,6 @@ export async function GET(
     const format = searchParams.get("format") || searchParams.get("type");
     const acceptHeader = request.headers.get("accept") || "";
 
-    if (format === "google") {
-      const googleWalletUrl = generateGoogleWalletJwtUrl(guest);
-      return NextResponse.redirect(googleWalletUrl);
-    }
-
     if (format === "json" || acceptHeader.includes("application/json")) {
       const googleWalletUrl = generateGoogleWalletJwtUrl(guest);
       const googleWalletPass = buildGoogleWalletPass(guest);

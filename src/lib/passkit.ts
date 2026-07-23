@@ -2,6 +2,8 @@ import { PKPass } from "passkit-generator";
 // @ts-expect-error node-forge types missing
 import forge from "node-forge";
 import { Guest } from "@/types";
+import fs from "fs";
+import path from "path";
 
 export interface PasskitStructure {
   formatVersion: number;
@@ -243,13 +245,15 @@ export async function generatePasskitPassBuffer(guest: Guest): Promise<Buffer> {
     altText: guest.id,
   });
 
-  // Transparent 1x1 PNG for icon.png & logo.png to fulfill PKPass bundle requirements
-  const dummyPng = Buffer.from(
-    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=",
-    "base64"
-  );
-  pass.addBuffer("icon.png", dummyPng);
-  pass.addBuffer("logo.png", dummyPng);
+  // Add real 100x100 icon and 200x50 logo PNGs to satisfy Google Wallet requirements
+  try {
+    const iconPath = path.join(process.cwd(), "public", "icon.png");
+    const logoPath = path.join(process.cwd(), "public", "logo.png");
+    pass.addBuffer("icon.png", fs.readFileSync(iconPath));
+    pass.addBuffer("logo.png", fs.readFileSync(logoPath));
+  } catch (err) {
+    console.warn("Failed to read icon/logo for pkpass:", err);
+  }
 
   return pass.getAsBuffer();
 }
