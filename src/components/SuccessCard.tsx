@@ -57,8 +57,12 @@ export function SuccessCard({ guest, onReset }: SuccessCardProps) {
     window.open(`/api/ticket/${guest.id}`, "_blank");
   };
 
-  const handleSaveWallet = () => {
+  const handleSaveAppleWallet = () => {
     window.open(`/api/wallet/${guest.id}`, "_blank");
+  };
+
+  const handleSaveGoogleWallet = () => {
+    window.open(`/api/wallet/${guest.id}?format=google`, "_blank");
   };
 
   return (
@@ -219,7 +223,7 @@ export function SuccessCard({ guest, onReset }: SuccessCardProps) {
           transition={{ duration: 0.5, delay: 0.5 }}
           className="space-y-3"
         >
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3">
             {/* Download Ticket (PDF) */}
             <button
               onClick={handleDownloadPDF}
@@ -230,15 +234,27 @@ export function SuccessCard({ guest, onReset }: SuccessCardProps) {
               <span>Download Ticket (PDF)</span>
             </button>
 
-            {/* Save to Android Wallet */}
-            <button
-              onClick={handleSaveWallet}
-              type="button"
-              className="w-full py-3 px-4 rounded-xl bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 text-white font-medium text-xs sm:text-sm flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.98] shadow-md hover:border-[#F79E1B]/50"
-            >
-              <Wallet className="w-4 h-4 text-[#F79E1B]" />
-              <span>Save to Android Wallet</span>
-            </button>
+            <div className="grid grid-cols-2 gap-3">
+              {/* Save to Apple Wallet */}
+              <button
+                onClick={handleSaveAppleWallet}
+                type="button"
+                className="w-full py-3 px-2 rounded-xl bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 text-white font-medium text-xs sm:text-sm flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.98] shadow-md hover:border-white/50"
+              >
+                <Wallet className="w-4 h-4 text-white" />
+                <span>Apple Wallet</span>
+              </button>
+
+              {/* Save to Google Wallet */}
+              <button
+                onClick={handleSaveGoogleWallet}
+                type="button"
+                className="w-full py-3 px-2 rounded-xl bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 text-white font-medium text-xs sm:text-sm flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.98] shadow-md hover:border-[#F79E1B]/50"
+              >
+                <Wallet className="w-4 h-4 text-[#F79E1B]" />
+                <span>Google Wallet</span>
+              </button>
+            </div>
           </div>
 
           {/* Register Another Guest */}

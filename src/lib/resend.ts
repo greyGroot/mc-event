@@ -75,8 +75,11 @@ export async function sendTicketEmail(
           </div>
           
           <div style="text-align: center; margin-top: 30px;">
-            <a href="${baseUrl}/api/wallet/${guest.id}" style="background-color: #171717; border: 1px solid #F79E1B; color: #F79E1B; text-decoration: none; padding: 14px 28px; border-radius: 8px; font-weight: bold; display: inline-block; font-size: 14px;">
-              💾 Save to Android Wallet
+            <a href="${baseUrl}/api/wallet/${guest.id}" style="background-color: #171717; border: 1px solid #ffffff; color: #ffffff; text-decoration: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; display: inline-block; font-size: 14px; margin: 5px;">
+              🍎 Add to Apple Wallet
+            </a>
+            <a href="${baseUrl}/api/wallet/${guest.id}?format=google" style="background-color: #171717; border: 1px solid #F79E1B; color: #F79E1B; text-decoration: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; display: inline-block; font-size: 14px; margin: 5px;">
+              🤖 Add to Google Wallet
             </a>
           </div>
         </div>
