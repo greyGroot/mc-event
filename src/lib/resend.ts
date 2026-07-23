@@ -36,6 +36,7 @@ export async function sendTicketEmail(
   try {
     const resend = new Resend(apiKey);
     const fromEmail = process.env.RESEND_FROM_EMAIL || "Mastercard VIP Events <onboarding@resend.dev>";
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
 
     const emailResponse = await resend.emails.send({
       from: fromEmail,
@@ -71,6 +72,12 @@ export async function sendTicketEmail(
           
           <div style="text-align: center; color: #888888; font-size: 12px; margin-top: 20px;">
             <p>Please present your attached PDF ticket or QR code upon arrival at the Mastercard Terminal.</p>
+          </div>
+          
+          <div style="text-align: center; margin-top: 30px;">
+            <a href="${baseUrl}/api/wallet/${guest.id}" style="background-color: #171717; border: 1px solid #F79E1B; color: #F79E1B; text-decoration: none; padding: 14px 28px; border-radius: 8px; font-weight: bold; display: inline-block; font-size: 14px;">
+              💾 Save to Android Wallet
+            </a>
           </div>
         </div>
       `,
