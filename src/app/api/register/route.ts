@@ -62,7 +62,7 @@ export async function POST(request: Request) {
         guest,
         qrCodeDataUrl,
       },
-      { status: 201 }
+      { status: 200 }
     );
   } catch (error) {
     console.error("API register error:", error);

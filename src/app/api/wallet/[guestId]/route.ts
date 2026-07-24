@@ -4,6 +4,7 @@ import {
   generatePasskitPassBuffer,
   buildPasskitStructure,
   buildGoogleWalletPass,
+  generateGoogleWalletJwt,
   generateGoogleWalletJwtUrl,
 } from "@/lib/passkit";
 
@@ -44,6 +45,11 @@ export async function GET(
 
     // Check if JSON payload or Google Wallet URL format is requested
     const format = searchParams.get("format") || searchParams.get("type");
+
+    if (format === "google") {
+      const signedJwt = generateGoogleWalletJwt(guest);
+      return NextResponse.redirect(`https://pay.google.com/gp/v/save/${signedJwt}`, 302);
+    }
     const acceptHeader = request.headers.get("accept") || "";
 
     if (format === "json" || acceptHeader.includes("application/json")) {

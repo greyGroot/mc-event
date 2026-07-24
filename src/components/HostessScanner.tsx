@@ -350,6 +350,7 @@ export function HostessScanner({ password, onCheckInSuccess }: HostessScannerPro
       <AnimatePresence>
         {overlayType && (
           <motion.div
+            key="overlay-container"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}

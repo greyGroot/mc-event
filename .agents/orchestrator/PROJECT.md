@@ -15,12 +15,23 @@
 | 3 | Backend API, QR, PDF & Email | `/api/register`, Firestore guest write, QR code gen, PDF ticket gen, Resend email sending | M1, M2 | DONE |
 | 4 | Android Wallet / Passkit Integration | Passkit / Google Wallet pass generator endpoint & UI button on success screen | M3 | DONE |
 | 5 | Hostess Scanner & Dashboard | `/hostess` route, password auth, camera QR check-in, real-time visitor table | M1, M3 | DONE |
-| 6 | E2E Testing & Forensic Audit | End-to-end integration tests & Forensic Auditor verification | M0-M5 | DONE |
+| 6 | Base E2E Testing & Forensic Audit | End-to-end integration tests & Forensic Auditor verification | M0-M5 | DONE |
+| 7 | Environment & Git Setup | Branch creation (`feat/google-wallet-integration`) & `.env.local` validation | M6 | DONE |
+| 8 | Google Wallet Integration | Official Google Wallet JWT signing flow, `setup-google-class.js`, `passkit.ts` update, `/api/wallet/[guestId]` redirect | M7 | DONE |
+| 9 | Playwright E2E Suite | Setup Playwright, `playwright.config.ts`, `registration.spec.ts`, `hostess.spec.ts`, `api.spec.ts` | M8 | DONE |
+| 10 | E2E Pass & Forensic Audit | Run `npx playwright test` across browsers, verify Google Wallet redirect, Forensic Audit pass | M7-M9 | DONE |
+
+
+
 
 ## Interface Contracts
 ### Client ↔ `/api/register`
 - Request: `POST /api/register` with `{ firstName, lastName, company, position, email }`
 - Response: `{ success: true, guestId, qrCodeDataUrl, pdfTicketUrl, walletPassUrl }`
+
+### Google Wallet Endpoint ↔ `/api/wallet/[guestId]?format=google`
+- Request: `GET /api/wallet/[guestId]?format=google`
+- Response: 302 Redirect to `https://pay.google.com/gp/v/save/${signedJwt}`
 
 ### Hostess ↔ `/api/hostess/checkin`
 - Request: `POST /api/hostess/checkin` with `{ guestId, password }`
@@ -35,8 +46,14 @@
 
 ## Code Layout
 ```
-d:\2grow\mc-terminal\
+d:\2grow\mc-event\
 ├── .agents/
+├── scripts/
+│   └── setup-google-class.js
+├── tests/
+│   ├── registration.spec.ts
+│   ├── hostess.spec.ts
+│   └── api.spec.ts
 ├── src/
 │   ├── app/
 │   │   ├── layout.tsx
@@ -71,5 +88,7 @@ d:\2grow\mc-terminal\
 ├── .env.example
 ├── .env.local
 ├── package.json
+├── playwright.config.ts
 └── tailwind.config.js
 ```
+
