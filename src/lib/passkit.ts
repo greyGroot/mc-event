@@ -1,6 +1,7 @@
 import { PKPass } from "passkit-generator";
 // @ts-expect-error node-forge types missing
 import forge from "node-forge";
+import jwt from "jsonwebtoken";
 import { Guest } from "@/types";
 import fs from "fs";
 import path from "path";
@@ -172,13 +173,60 @@ export function buildGoogleWalletPass(guest: Guest): GoogleWalletPassData {
 }
 
 /**
+ * Generates a signed Google Wallet JWT for Save to Google Wallet.
+ */
+export function generateGoogleWalletJwt(guest: Guest): string {
+  const issuerId = process.env.GOOGLE_WALLET_ISSUER_ID || "3388000000023175673";
+  const clientEmail = process.env.GOOGLE_WALLET_CLIENT_EMAIL || "";
+  let privateKey = process.env.GOOGLE_WALLET_PRIVATE_KEY || "";
+
+  if (privateKey) {
+    privateKey = privateKey.replace(/\\n/g, "\n");
+    if (privateKey.startsWith('"') && privateKey.endsWith('"')) {
+      privateKey = privateKey.slice(1, -1);
+    }
+  }
+
+  const classId = `${issuerId}.mastercard_event_ticket_class`;
+  const objectId = `${issuerId}.${guest.id}`;
+
+  const claims = {
+    iss: clientEmail,
+    aud: "google",
+    origins: ["http://localhost:3000"],
+    typ: "savetowallet",
+    payload: {
+      eventTicketObjects: [
+        {
+          id: objectId,
+          classId: classId,
+          state: "ACTIVE",
+          ticketHolderName: `${guest.firstName} ${guest.lastName}`,
+          eventName: {
+            defaultValue: {
+              language: "en-US",
+              value: "Mastercard Exclusive Event",
+            },
+          },
+          barcode: {
+            type: "QR_CODE",
+            value: guest.id,
+          },
+          hexBackgroundColor: "#0A0A0A",
+        },
+      ],
+    },
+  };
+
+  return jwt.sign(claims, privateKey, { algorithm: "RS256" });
+}
+
+/**
  * Generates a direct Google Wallet Save URL payload.
  */
 export function generateGoogleWalletJwtUrl(guest: Guest): string {
-  const walletData = buildGoogleWalletPass(guest);
-  const jsonString = JSON.stringify(walletData);
-  const base64Data = Buffer.from(jsonString).toString("base64url");
-  return `https://pay.google.com/gp/v/save/${base64Data}`;
+  const signedJwt = generateGoogleWalletJwt(guest);
+  return `https://pay.google.com/gp/v/save/${signedJwt}`;
 }
 
 /**
